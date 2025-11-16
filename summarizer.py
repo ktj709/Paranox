@@ -132,37 +132,6 @@ def create_formatted_report(summaries: list, source_file: str = "document.pdf") 
             lines.append("")
             lines.append("")
         
-        # IMAGE ANALYSIS
-        if summary['image_summaries']:
-            lines.append("IMAGE ANALYSIS:")
-            lines.append(subseparator)
-            lines.append("")
-            
-            for idx, img_data in enumerate(summary['image_summaries'], 1):
-                lines.append(f"Image {idx}:")
-                lines.append("")
-                
-                # Image metadata
-                meta = img_data['meta']
-                width = meta.get('width', 'N/A')
-                height = meta.get('height', 'N/A')
-                img_format = meta.get('format', 'N/A')
-                mode = meta.get('mode', 'N/A')
-                
-                lines.append(f"  Dimensions: {width} x {height} pixels")
-                lines.append(f"  Format: {img_format}")
-                lines.append(f"  Mode: {mode}")
-                lines.append("")
-                lines.append("  Description:")
-                lines.append("")
-                
-                # Format image description with indentation
-                desc = img_data['desc']
-                formatted_desc = format_text_with_paragraphs(desc, width=96, indent=4)
-                lines.append(formatted_desc)
-                lines.append("")
-                lines.append("")
-        
         lines.append("")
     
     # FOOTER
@@ -205,29 +174,6 @@ def summarize_pdf_pages(page_records: list, model="gemini-2.0-flash",
         else:
             text_summary = ""
 
-        # Summarize images
-        image_summaries = []
-        for img in rec["images"]:
-            meta = extract_image_metadata(img)
-            # Convert PIL image → bytes for Gemini
-            buf = io.BytesIO()
-            img.save(buf, format="PNG")
-            desc = client.analyze_image(buf.getvalue())
-            desc_lower = desc.strip().lower()
-            
-            # Filter out black/empty images
-            black_keywords = [
-                "completely black", "filled black rectangle", "solid black", "uniformly dark", 
-                "entirely black", "pure black", "devoid of", "no discernible",
-                "uniform expanse of darkness", "uniformly black", "solid, uniform expanse"
-            ]
-            
-            is_black_image = any(keyword in desc_lower for keyword in black_keywords)
-            
-            # Only add if it's not a black/empty image
-            if not is_black_image:
-                image_summaries.append({"meta": meta, "desc": desc.strip()})
-
         # Create a short combined page summary for table of contents
         combined_short = ""
         if text_summary:
@@ -235,20 +181,12 @@ def summarize_pdf_pages(page_records: list, model="gemini-2.0-flash",
             first_line = text_summary.split('\n')[0]
             if len(first_line) > 100:
                 first_line = first_line[:100]
-            combined_short += first_line
-        
-        if image_summaries:
-            img_desc = image_summaries[0]["desc"]
-            if img_desc:
-                first_img_line = img_desc.split('\n')[0]
-                if len(first_img_line) > 50:
-                    first_img_line = first_img_line[:50]
-                combined_short += f" | Image: {first_img_line}"
+            combined_short = first_line
 
         outputs.append({
             "page_no": page_no,
             "text_summary": text_summary,
-            "image_summaries": image_summaries,
+            "image_summaries": [],  # No image analysis
             "combined_short": combined_short
         })
     

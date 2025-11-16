@@ -104,9 +104,9 @@ def write_formatted_summary_pdf(summary_records, output_path="pdf_summary_report
         y = draw_separator(y, "=", 100)
         y -= 10
         
-        # Text content section
+        # Summary section
         c.setFont("Helvetica-Bold", 11)
-        c.drawString(margin, y, "TEXT CONTENT:")
+        c.drawString(margin, y, "SUMMARY:")
         y -= 12
         y = draw_separator(y, "-", 100)
         y -= 5
@@ -115,46 +115,7 @@ def write_formatted_summary_pdf(summary_records, output_path="pdf_summary_report
             y = draw_wrapped_text(y, rec['text_summary'], "Helvetica", 10)
         else:
             c.setFont("Helvetica-Oblique", 10)
-            c.drawString(margin, y, "(No extractable text on this page)")
-            y -= 15
-        
-        y -= 10
-        
-        # Image analysis section
-        c.setFont("Helvetica-Bold", 11)
-        c.drawString(margin, y, "IMAGE ANALYSIS:")
-        y -= 12
-        y = draw_separator(y, "-", 100)
-        y -= 5
-        
-        if rec['image_summaries']:
-            for idx, imr in enumerate(rec['image_summaries'], 1):
-                c.setFont("Helvetica-Bold", 10)
-                c.drawString(margin, y, f"Image {idx}:")
-                y -= 15
-                
-                # Image metadata
-                c.setFont("Helvetica", 9)
-                c.drawString(margin + 5, y, "Dimensions: N/A x N/A pixels")
-                y -= 11
-                c.drawString(margin + 5, y, "Format: N/A")
-                y -= 11
-                c.drawString(margin + 5, y, "Mode: N/A")
-                y -= 15
-                
-                c.setFont("Helvetica-Bold", 9)
-                c.drawString(margin + 5, y, "Description:")
-                y -= 15
-                
-                y = draw_wrapped_text(y, imr['desc'], "Helvetica", 9, indent=4)
-                y -= 15
-                
-                if y < 100:
-                    c.showPage()
-                    y = height - margin
-        else:
-            c.setFont("Helvetica-Oblique", 10)
-            c.drawString(margin, y, "(No images detected on this page)")
+            c.drawString(margin, y, "(No content to summarize)")
             y -= 15
         
         y -= 10
