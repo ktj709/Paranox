@@ -7,10 +7,7 @@ The API now uploads generated PDF summaries to Cloudinary and returns the public
 
 1. **Environment Variables** (already configured in `.env`):
 ```env
-CLOUDINARY_CLOUD_NAME=dm6cpqvty
-CLOUDINARY_API_KEY=843722665331658
-CLOUDINARY_API_SECRET=gAUhq1it0dYwOOCJBl9Y05cF60A
-GEMINI_API_KEY=AIzaSyAsqlZ8MhhKkQfLExzBL0CK8NiLiQJJeoI
+
 ```
 
 2. **Install Dependencies**:
