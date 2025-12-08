@@ -1,6 +1,7 @@
 # fastapi_app.py
 import os
 import tempfile
+import uuid
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -91,10 +92,11 @@ async def summarize_json(input_data: JSONInput):
         raise HTTPException(status_code=400, detail="Content field cannot be empty.")
     
     tmp_output_path = None
-    
+    unique_id = uuid.uuid4().hex
+
     try:
         # Define output file path
-        tmp_output_path = os.path.join(tempfile.gettempdir(), "summary_output.pdf")
+        tmp_output_path = os.path.join(tempfile.gettempdir(), f"summary_output_{unique_id}.pdf")
         
         # Convert Pydantic model to dict
         json_dict = {"content": input_data.content}
@@ -109,7 +111,9 @@ async def summarize_json(input_data: JSONInput):
             pdf_path,
             resource_type="raw",
             folder="summaries",
-            public_id=f"summary_{os.path.basename(pdf_path).replace('.pdf', '')}"
+            public_id=f"summary_{unique_id}",
+            overwrite=True,
+            invalidate=True,
         )
         
         # Clean up temporary file

@@ -3,6 +3,7 @@ import streamlit as st
 import tempfile
 import os
 import json
+import uuid
 import cloudinary
 import cloudinary.uploader
 from dotenv import load_dotenv
@@ -58,7 +59,8 @@ if input_json.strip():
             # Run summarization
             if st.button("Summarize JSON Data", type="primary"):
                 with st.spinner("Summarizing with Gemini... this may take a minute ⏳"):
-                    output_pdf_path = os.path.join(tempfile.gettempdir(), "summarized_report.pdf")
+                    unique_id = uuid.uuid4().hex
+                    output_pdf_path = os.path.join(tempfile.gettempdir(), f"summarized_report_{unique_id}.pdf")
                     
                     # Generate summary and formatted PDF
                     pdf_path, text_preview = summarize_json_input(json_data, output_pdf_path)
@@ -72,7 +74,9 @@ if input_json.strip():
                             pdf_path,
                             resource_type="raw",
                             folder="summaries",
-                            public_id=f"summary_{os.path.basename(pdf_path).replace('.pdf', '')}"
+                            public_id=f"summary_{unique_id}",
+                            overwrite=True,
+                            invalidate=True,
                         )
                         
                         cloudinary_url = upload_result["secure_url"]
