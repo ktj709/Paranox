@@ -31,9 +31,9 @@ app = FastAPI(
 # Add CORS middleware (optional, useful if you have a frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
+    allow_origins=["*", "https://sih-audio-2025-backend.onrender.com"],  # Configure appropriately for production
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["POST"],
     allow_headers=["*"],
 )
 
