@@ -141,7 +141,7 @@ def create_formatted_report(summaries: list, source_file: str = "document.pdf") 
     
     return '\n'.join(lines)
 
-def summarize_pdf_pages(page_records: list, model="gemini-2.0-flash", 
+def summarize_pdf_pages(page_records: list, model="gemini-2.5-flash", 
                         create_report: bool = False, source_file: str = "document.pdf"):
     """
     Summarize PDF pages with optional formatted text report.
@@ -196,7 +196,7 @@ def summarize_pdf_pages(page_records: list, model="gemini-2.0-flash",
     
     return outputs
 
-def summarize_json_input(json_data: dict, output_pdf_path: str, model="gemini-2.0-flash"):
+def summarize_json_input(json_data: dict, output_pdf_path: str, model="gemini-2.5-flash"):
     """
     Summarize JSON input data and generate a formatted PDF report.
     
